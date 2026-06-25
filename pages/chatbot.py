@@ -145,7 +145,7 @@ st.markdown(f"""
     <div class="robot-icon">🤖</div>
     <div class="chat-header-text">
         <h2>LearnMate AI Assistant</h2>
-        <p>Hi {name}! Ask me anything about {course} 💬</p>
+        <p>Hi {name}! Ask me anything about {course} 💬 and not only this i am a AI chatbot you can text me anything you want🕵🏻‍♂️</p>
     </div>
 </div>
 """, unsafe_allow_html=True)
