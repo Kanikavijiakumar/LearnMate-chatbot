@@ -2,4 +2,3 @@ streamlit
 requests
 python-dotenv
 groq
-Pillow
