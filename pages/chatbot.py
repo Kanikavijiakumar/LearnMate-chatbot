@@ -30,8 +30,11 @@ if "chat_history" not in st.session_state:
     if user_id:
         try:
             result = supabase.table("chat_history")\
-                .select("*").eq("user_id", user_id)\
-                .order("timestamp").execute()
+                .select("*")\
+                .eq("user_id", user_id)\
+                .eq("course", course)\
+                .order("timestamp")\
+                .execute()
             for row in result.data:
                 st.session_state["chat_history"].append({
                     "role": row["role"],
@@ -88,36 +91,38 @@ with col2:
 with col3:
     if st.button("💬 New Chat", use_container_width=True):
         st.session_state["chat_history"] = []
-        # DB la delete pannala — history safe aa irukku
         st.rerun()
 
 st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
 
-# ── HISTORY PANEL (inline, not separate page) ─────────
+# ── HISTORY PANEL ─────────────────────────────────────
 if st.session_state["show_history"]:
-    st.markdown("""
+    st.markdown(f"""
     <div style='background:linear-gradient(160deg,#1b5e20,#2e7d32);
     border-radius:16px; padding:1.25rem; margin-bottom:1rem;'>
         <div style='color:#a5d6a7; font-weight:700; font-size:0.85em;
-        letter-spacing:1px; margin-bottom:1rem;'>🕐 CHAT HISTORY</div>
+        letter-spacing:1px; margin-bottom:1rem;'>🕐 {course} — CHAT HISTORY</div>
     """, unsafe_allow_html=True)
 
     if user_id:
         try:
             result = supabase.table("chat_history")\
-                .select("*").eq("user_id", user_id)\
-                .order("timestamp").execute()
+                .select("*")\
+                .eq("user_id", user_id)\
+                .eq("course", course)\
+                .order("timestamp")\
+                .execute()
             all_history = result.data
         except:
             all_history = []
     else:
-        all_history = [{"role": m["role"], "message": m["content"]} 
+        all_history = [{"role": m["role"], "message": m["content"]}
                        for m in st.session_state["chat_history"]]
 
     if all_history:
         for row in all_history:
-            role = row.get("role", "user")
-            msg  = row.get("message", row.get("content", ""))
+            role  = row.get("role", "user")
+            msg   = row.get("message", row.get("content", ""))
             icon  = "👤" if role == "user" else "🤖"
             label = "You" if role == "user" else "LearnMate AI"
             bg    = "rgba(255,255,255,0.18)" if role == "user" else "rgba(0,0,0,0.15)"
@@ -129,7 +134,7 @@ if st.session_state["show_history"]:
             </div>
             """, unsafe_allow_html=True)
     else:
-        st.markdown("<p style='color:#a5d6a7; font-size:0.85em; text-align:center;'>No chat history yet!</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='color:#a5d6a7; font-size:0.85em; text-align:center;'>No chat history for {course} yet!</p>", unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
